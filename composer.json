@@ -1,0 +1,35 @@
+{
+    "name": "mrlaozhou/laravel-package",
+    "description": "A package builder for laravel .",
+    "keywords": ["package", "laravel", "builder", "mrlaozhou"],
+    "require": {
+        "php": ">= 7.0"
+    },
+    "authors": [
+        {
+            "name": "Mrlaozhou",
+            "email": "zgsself@163.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "~7.3",
+        "laravel/framework": "5.6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mrlaozhou\\Package\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mrlaozhou\\Package\\LaravelServiceProvider"
+            ]
+        }
+    }
+}
