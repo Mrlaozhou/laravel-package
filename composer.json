@@ -28,7 +28,12 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mrlaozhou\\Package\\LaravelServiceProvider"
+                "Mrlaozhou\\Package\\Providers\\LaravelServiceProvider"
+            ]
+        },
+        "lumen": {
+            "providers": [
+                "Mrlaozhou\\Package\\Providers\\LumenServiceProvider"
             ]
         }
     }

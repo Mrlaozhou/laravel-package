@@ -20,7 +20,7 @@ class LaravelServiceProvider extends ServiceProvider
 
     public function register()
     {
-        echo 2;
+        $this->mergeConfigFrom( __DIR__ . '/../../config/package.php', 'package' );
     }
 
     protected function publishConfig()
