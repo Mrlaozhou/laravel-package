@@ -1,6 +1,7 @@
 <?php
 namespace Mrlaozhou\Package\Commands;
 
+use Illuminate\Support\Facades\Validator;
 use \Mrlaozhou\Package\Command;
 use Mrlaozhou\Package\Package;
 use Symfony\Component\Console\Question\Question;
@@ -40,7 +41,9 @@ class BuilderCommand extends Command
         //  命名空间
         $this->package->setPackageNamespace( $this->getNamespace() );
         //  作者
-        $this->package->setPackageAuthor( $this->getAuthor() );
+//        $this->package->setPackageAuthor( $this->getAuthor() );
+        //  主页
+        $this->package->setPackageHomepage( $this->getHomepage() );
         //  描述
         $this->package->setPackageDescription( $this->getDesc() );
         //  确认
@@ -49,7 +52,8 @@ class BuilderCommand extends Command
             [
                 ['名称', $this->package->getPackageName()],
                 ['命名空间', $this->package->getPackageNamespace()],
-                ['作者', $this->package->getPackageAuthor()],
+                ['作者', "{$this->package->getPackageAuthor()} <{$this->package->getPackageAuthorEmail()}>"],
+                ['主页', $this->package->getPackageHomepage()],
                 ['描述', $this->package->getPackageDescription()],
             ]
         );
@@ -74,7 +78,7 @@ class BuilderCommand extends Command
             }
             return $value;
         });
-        $question->setMaxAttempts(5);
+        $question->setMaxAttempts(3);
         return $this->expectAnswerMe( $question );
     }
 
@@ -115,5 +119,21 @@ class BuilderCommand extends Command
         $forecastDesc      =   $this->package->getPackageDescription();
         $question               =   new Question("扩展描述 (example: <fg=yellow>{$forecastDesc}</fg=yellow>): ");
         return $this->expectAnswerMe( $question, $forecastDesc );
+    }
+
+
+    protected function getHomepage()
+    {
+        $question               =   new Question('扩展包主页 (example: <fg=yellow>https://github.com/Mrlaozhou/laravel-package.git</fg=yellow>): ');
+        $question->setValidator(function ($value) {
+            $validate           =   Validator::make(['homepage'=>$value], ['homepage'      =>  'bail|nullable|url']);
+            if( $validate->fails() ) {
+                throw new \Exception($validate->errors()->first());
+            }else{
+                return $value;
+            }
+        });
+        $question->setMaxAttempts(3);
+        return $this->expectAnswerMe( $question );
     }
 }

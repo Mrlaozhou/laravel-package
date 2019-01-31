@@ -21,7 +21,17 @@ class Package
     /**
      * @var string
      */
-    protected $PACKAGE_AUTHOR           =   'mrlaozhou';
+    protected $PACKAGE_AUTHOR;
+
+    /**
+     * @var string
+     */
+    protected $PACKAGE_AUTHOR_EMAIL;
+
+    /**
+     * @var string
+     */
+    protected $PACKAGE_HOMEPAGE         =   'https://github.com/Mrlaozhou/laravel-package.git';
 
     /**
      * @var string
@@ -51,16 +61,19 @@ class Package
         $this->makeExtendDirectories();
         //  迁移文件
         $this->migrateFiles();
+        //  创建composer.json
+        $this->initComposer();
 
         $command->info("扩展包 [{$this->getPackageName()}] 创建成功");
     }
 
     protected function makeBasicDirectories()
     {
-        $this->filesystem->mkdir( $this->packageDirectory( 'src/' ), 0755 );
+        $this->filesystem->mkdir( $this->packageDirectory( 'src/Providers/' ), 0755 );
+        $this->filesystem->mkdir( $this->packageDirectory( 'src/Commands/' ), 0755 );
         $this->filesystem->mkdir( $this->packageDirectory( 'tests/' ), 0755 );
+        $this->filesystem->touch( $this->packageDirectory( 'tests/.gitkeep' ) );
         $this->filesystem->mkdir( $this->packageDirectory( 'config/' ), 0755 );
-        $this->filesystem->touch( $this->packageDirectory( 'config/' . $this->getPackageExactName() . '.php' ) );
     }
 
     protected function makeExtendDirectories()
@@ -75,19 +88,79 @@ class Package
 
     protected function migrateFiles()
     {
-        //  迁移主文件
-        File::put( $this->packageDirectory($this->getPackageExactName(false)), $this->getStub('dummy.php') );
+        //  主文件
+        File::put(
+            $this->packageDirectory('/src/' . $this->getPackageExactName(false)) . '.php',
+            $this->replaceStubDummy( $this->getStub('DummyClassName.stub') )
+        );
+        //  配置文件
+        File::put(
+            $this->packageDirectory('/config/' . $this->getPackageExactName(true)) . '.php',
+            $this->replaceStubDummy( $this->getStub('config.stub') )
+        );
         //  服务支持
-
+        File::put(
+            $this->packageDirectory('/src/ServiceProvider.php'),
+            $this->replaceStubDummy( $this->getStub('ServiceProvider.stub') )
+        );
+        File::put(
+            $this->packageDirectory('/src/Providers/LaravelServiceProvider.php'),
+            $this->replaceStubDummy( $this->getStub('LaravelServiceProvider.stub') )
+        );
+        File::put(
+            $this->packageDirectory('/src/Providers/LumenServiceProvider.php'),
+            $this->replaceStubDummy( $this->getStub('LumenServiceProvider.stub') )
+        );
+        //  git 支持
+        if( config('package.git') ) {
+            $this->filesystem->copy( __DIR__ . '/../stubs/gitattributes', $this->packageDirectory('.gitattributes') );
+            $this->filesystem->copy( __DIR__ . '/../stubs/gitignore', $this->packageDirectory('.gitignore') );
+        }
+        //  readme
+        if( config('package.readme') ) {
+            $this->filesystem->copy( __DIR__ . '/../stubs/README.md', $this->packageDirectory('README.md') );
+        }
     }
 
-    protected function getStub($file)
+    protected function initComposer()
     {
-        $stubPath               =   __DIR__ . '/stubs/';
-        if( File::exists( $stubPath . $file ) ) {
-            return File::get( $stubPath . $file );
+        $author = sprintf('%s <%s>', $this->getPackageAuthor(), $this->getPackageAuthorEmail());
+        exec(sprintf(
+            'composer init --no-interaction --name "%s" --author "%s" --description "%s" --working-dir %s --homepage "%s"',
+            $this->getPackageName(),
+            $author,
+            $this->getPackageDescription(),
+            $this->packageDirectory(),
+            $this->getPackageHomepage()
+        ));
+    }
+
+    /**
+     * @param $stubFile
+     *
+     * @return string
+     */
+    protected function getStub($stubFile)
+    {
+        $stubPath               =   __DIR__ . '/../stubs/';
+        if( File::exists( $stubPath . $stubFile ) ) {
+            return File::get( $stubPath . $stubFile );
         }
         return '';
+    }
+
+    /**
+     * @param $stub
+     *
+     * @return string
+     */
+    protected function replaceStubDummy(string $stub)
+    {
+        return str_replace(
+            ['DummyClassName', 'DummyNamespace'],
+            [$this->getPackageExactName(false), $this->getPackageNamespace()],
+            $stub
+        );
     }
 
     /**
@@ -163,11 +236,40 @@ class Package
     }
 
     /**
+     * @param string|null $homepage
+     *
+     * @return string
+     */
+    public function setPackageHomepage(string $homepage=null)
+    {
+        if( $homepage ) {
+            $this->PACKAGE_HOMEPAGE         =   $homepage;
+        }
+        return $this->getPackageHomepage();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPackageHomepage()
+    {
+        return $this->PACKAGE_HOMEPAGE;
+    }
+
+    /**
      * @return string
      */
     public function getPackageAuthor()
     {
-        return $this->PACKAGE_AUTHOR;
+        return config('package.author', '');
+    }
+
+    /**
+     * @return string
+     */
+    public function getPackageAuthorEmail()
+    {
+        return config('package.email', '');
     }
 
     /**
