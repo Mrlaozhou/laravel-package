@@ -1,28 +1,72 @@
 <h1 align="center"> laravel-package </h1>
 
-<p align="center"> A package builder for laravel ..</p>
+<p align="center"> Laravel 扩展包开发</p>
 
 
-## Installing
+## Install
 
 ```shell
-$ composer require mrlaozhou/laravel-package -vvv
+composer require mrlaozhou/laravel-package -dev
 ```
 
-## Usage
+```shell
+php artisan package-builder:publish
+```
 
-TODO
+## Config
 
-## Contributing
+```php
+[
+    /*
+    |--------------------------------------------------------------------------
+    | 开发包目录
+    |--------------------------------------------------------------------------
+    |   建议所有的开发包放到统一目录 便于管理
+    |   注：相对于base
+    |
+    */
 
-You can contribute in one of three ways:
+    'package_path'              =>  'laravel-packages',
 
-1. File bug reports using the [issue tracker](https://github.com/mrlaozhou/laravel-package/issues).
-2. Answer questions or fix bugs on the [issue tracker](https://github.com/mrlaozhou/laravel-package/issues).
-3. Contribute new features or update the wiki.
+    /*
+    |--------------------------------------------------------------------------
+    | Author
+    |--------------------------------------------------------------------------
+    */
 
-_The code contribution process is not very formal. You just need to make sure that you follow the PSR-0, PSR-1, and PSR-2 coding guidelines. Any new code contributions must be accompanied by unit tests where applicable._
+    'author'                    =>  'mrlaozhou',
 
-## License
+    'email'                     =>  'zgsself@163.com',
 
-MIT
+
+    /*
+    |--------------------------------------------------------------------------
+    | 扩展目录
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'directories'               =>  [
+
+//        'database/migrations'
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | git 支持
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'git'                       =>  true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | README 支持
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'readme'                    =>  true,
+]
+```

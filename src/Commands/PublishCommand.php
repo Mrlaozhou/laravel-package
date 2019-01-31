@@ -2,6 +2,7 @@
 namespace Mrlaozhou\Package\Commands;
 
 use Illuminate\Console\Command;
+use Mrlaozhou\Package\Providers\LaravelServiceProvider;
 
 class PublishCommand extends Command
 {
@@ -27,6 +28,10 @@ class PublishCommand extends Command
      */
     public function handle()
     {
-
+        $this->call('vendor:publish', [
+            '--provider' => LaravelServiceProvider::class,
+            '--force' => '',
+            '--tag' => ['config'],
+        ]);
     }
 }

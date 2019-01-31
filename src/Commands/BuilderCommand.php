@@ -121,7 +121,9 @@ class BuilderCommand extends Command
         return $this->expectAnswerMe( $question, $forecastDesc );
     }
 
-
+    /**
+     * @return mixed
+     */
     protected function getHomepage()
     {
         $question               =   new Question('扩展包主页 (example: <fg=yellow>https://github.com/Mrlaozhou/laravel-package.git</fg=yellow>): ');

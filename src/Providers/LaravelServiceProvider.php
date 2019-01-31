@@ -9,6 +9,7 @@ class LaravelServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->publishConfig();
         //  注册命令
         if( $this->app->runningInConsole() ) {
             $this->commands( [
@@ -26,7 +27,7 @@ class LaravelServiceProvider extends ServiceProvider
     protected function publishConfig()
     {
         $this->publishes( [
-            __DIR__ . '/../config/package.php'  =>  config_path( 'package.php' )
+            __DIR__ . '/../../config/package.php'  =>  config_path( 'package.php' )
         ], 'config' );
     }
 }
