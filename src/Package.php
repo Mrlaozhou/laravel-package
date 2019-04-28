@@ -69,8 +69,7 @@ class Package
 
     protected function makeBasicDirectories()
     {
-        $this->filesystem->mkdir( $this->packageDirectory( 'src/Providers/' ), 0755 );
-        $this->filesystem->mkdir( $this->packageDirectory( 'src/Commands/' ), 0755 );
+        $this->filesystem->mkdir( $this->packageDirectory( 'src/' ), 0755 );
         $this->filesystem->mkdir( $this->packageDirectory( 'tests/' ), 0755 );
         $this->filesystem->touch( $this->packageDirectory( 'tests/.gitkeep' ) );
         $this->filesystem->mkdir( $this->packageDirectory( 'config/' ), 0755 );
@@ -102,14 +101,6 @@ class Package
         File::put(
             $this->packageDirectory('/src/ServiceProvider.php'),
             $this->replaceStubDummy( $this->getStub('ServiceProvider.stub') )
-        );
-        File::put(
-            $this->packageDirectory('/src/Providers/LaravelServiceProvider.php'),
-            $this->replaceStubDummy( $this->getStub('LaravelServiceProvider.stub') )
-        );
-        File::put(
-            $this->packageDirectory('/src/Providers/LumenServiceProvider.php'),
-            $this->replaceStubDummy( $this->getStub('LumenServiceProvider.stub') )
         );
         //  git 支持
         if( config('package.git') ) {

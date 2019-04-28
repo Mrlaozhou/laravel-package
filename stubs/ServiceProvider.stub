@@ -3,7 +3,7 @@ namespace DummyNamespace;
 
 use \Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-abstract class ServiceProvider extends BaseServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
 
 }

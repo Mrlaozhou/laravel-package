@@ -126,7 +126,8 @@ class BuilderCommand extends Command
      */
     protected function getHomepage()
     {
-        $question               =   new Question('扩展包主页 (example: <fg=yellow>https://github.com/Mrlaozhou/laravel-package.git</fg=yellow>): ');
+        $defaultHomepage        =   "https://github.com/Mrlaozhou/laravel-{$this->package->getPackageExactName()}.git";
+        $question               =   new Question('扩展包主页 (example: <fg=yellow>' . $defaultHomepage . '</fg=yellow>): ');
         $question->setValidator(function ($value) {
             $validate           =   Validator::make(['homepage'=>$value], ['homepage'      =>  'bail|nullable|url']);
             if( $validate->fails() ) {
